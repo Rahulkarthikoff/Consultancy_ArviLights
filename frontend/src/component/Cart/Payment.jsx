@@ -9,7 +9,7 @@ import DummyCard from "./DummyCard";
 import { clearErrors, createOrder } from "../../actions/orderAction";
 import CheckoutSteps from "./CheckoutSteps ";
 import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
+// import { Elements } from "@stripe/react-stripe-js";
 
 // for cardDetails for card detials input section and hooks for accessing strip and element from App.js route
 import {
@@ -486,13 +486,6 @@ const PaymentComponent = () => {
     (acc, item) => acc + item.price * item.quantity,
     0
   );
-
-
-
-const stripePromise = loadStripe('pk_test_51RBrqa05TrkEbIZeaEXcDUyrP7w1uvXIM0TXy1LdJKwqp2lyV9x3Z5D7HPNHgHHNl9jY0GfICmi5xNBRFktZ5rdW00RWzhZiIY');
-
-
-
 
   let discountedPrice = generateDiscountedPrice(totalPrice);
   let totalDiscount = totalPrice - discountedPrice;

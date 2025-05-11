@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import {
   Card,
   Typography,
@@ -14,6 +14,7 @@ import {useAlert} from "react-alert";
 import { addItemToCart } from "../../actions/cartAction";
 import {useHistory} from "react-router-dom";
 import DialogBox from "../Product/DialogBox";
+import { calculateDeliveryDate } from "../../utils/deliveryUtils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -265,6 +266,11 @@ const useStyles = makeStyles((theme) => ({
 
 
 const OrderCard = ({item , user}) => {
+  const [deliveryDates, setDeliveryDates] = useState("Calculating...");
+  const shopPincode = 638003;
+
+ 
+
     const dispatch = useDispatch();
     const history = useHistory();
     const alert = useAlert();
@@ -288,6 +294,25 @@ const classes = useStyles();
      console.log("called");
      setOpen(false);
    };
+   
+
+   useEffect(() => {
+    const fetchDeliveryDates = async () => {
+      const dates = {};
+      for (const product of orderItems) {
+        const date = await calculateDeliveryDate(
+          shippingInfo.pinCode,
+          shopPincode
+        );
+        dates[product.productId] = date;
+      }
+      setDeliveryDates(dates);
+    };
+
+    fetchDeliveryDates();
+  }, [orderItems, shippingInfo.pinCode, shopPincode]);
+
+  
 
   return (
     <div className={classes.root}>
@@ -317,6 +342,16 @@ const classes = useStyles();
               >
                 ORDER-ID: #{item._id}
               </Typography>
+
+
+              <Typography
+            variant="body2"
+            className={classes.orderId}
+            style={{ fontWeight: "500", marginTop: "8px" }}
+            >
+            Estimated Delivery:{" "}
+            {deliveryDates[product.productId] || "Calculating..."}
+            </Typography>
             </div>
 
             {/* Right side */}

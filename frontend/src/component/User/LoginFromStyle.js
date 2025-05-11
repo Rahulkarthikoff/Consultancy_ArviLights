@@ -344,9 +344,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
   },
   selectOption: {
-    marginTop: theme.spacing(5.5),
+    marginTop: theme.spacing(1.5),
     position: "relative",
     width: "100%",
+    marginBottom: theme.spacing(2.5),
   },
 
   imageArea: {

@@ -5,6 +5,7 @@ import { makeStyles } from "@mui/styles";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import AddIcon from "@mui/icons-material/Add";
+import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
@@ -148,6 +149,14 @@ function accountHandler() {
                 <li className={classes.sideBarMenuItem}>
                   <HomeIcon fontSize="large" />
                   <span className={classes.sideBarMenuItem_text}>Home</span>
+                </li>
+              </Link>
+
+
+              <Link to="/admin/offers" style={{ color: "inherit", textDecoration: "none" }}>
+                <li className={classes.sideBarMenuItem}>
+                  <LocalOfferIcon fontSize="large" />
+                  <span className={classes.sideBarMenuItem_text}>Seasonal Offers</span>
                 </li>
               </Link>
 

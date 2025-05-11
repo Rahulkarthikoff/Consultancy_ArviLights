@@ -140,6 +140,20 @@ gap: 10px;
   margin: 1.5rem 0;
   background-color: #d7d5d2d4;
 }
+
+.filter_divider button{
+  border: none;
+  margin: 20px;
+  background-color: #ff363d;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+
+.filter_divider button:hover{
+  background-color: #df0007;
+}
 .menu_item{
   color: white !important;
 box-shadow: rgb(255, 255, 255) !important;

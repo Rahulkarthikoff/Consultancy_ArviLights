@@ -1,4 +1,7 @@
 import React  from "react";
+import axios from "axios";
+import { useEffect } from "react";
+import { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Card,
@@ -12,10 +15,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveIcon from "@material-ui/icons/Remove";
 import AddIcon from "@material-ui/icons/Add";
 import {
-  dispalyMoney,
+  displayMoney,
   generateDiscountedPrice,
 
 } from "../DisplayMoney/DisplayMoney";
+import Loader from "../layouts/loader/Loader";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -205,6 +209,60 @@ const useStyles = makeStyles((theme) => ({
 
 
 
+// function CartItem({
+//   productId,
+//   deleteCartItems,
+//   item,
+//   decreaseQuantity,
+//   increaseQuantity,
+//   length,
+// }) {
+//   const classes = useStyles();
+//   // console.log("This is the Product Id from CArtitem", productId);
+
+
+//   //fetchinig product details from model
+//   const [productDetails, setProductDetails] = useState(null);
+
+//   useEffect(() => {
+//     const fetchProductDetails = async () => {
+//       try {
+//         const { data } = await axios.get(`/api/v1/product/${productId}`);
+//         // console.log("Product Details", data.Product); #tested Okay
+//         setProductDetails(data.Product);
+//       } catch (error) {
+//         console.error("Error fetching product details", error);
+//       }
+//     };
+
+//     fetchProductDetails();
+//   }, [productId]);
+
+
+
+//   // calculate price after discount
+//   console.log("This is cartitem", productDetails);
+//   if (!productDetails || !productDetails.price) return <Loader />;
+
+
+
+
+
+
+//   let finalPrice = generateDiscountedPrice(
+//     productDetails.price,
+//     productDetails.offer,
+//     productDetails.offerPercentage,
+//     productDetails.offerEndDate
+//   );
+
+//   let discountedPrice = productDetails.price - finalPrice;
+//   discountedPrice = displayMoney(discountedPrice);
+//   let total = finalPrice * item.quantity;
+//   total = displayMoney(total);
+//   finalPrice = displayMoney(finalPrice);
+
+
 function CartItem({
   deleteCartItems,
   item,
@@ -215,13 +273,13 @@ function CartItem({
   const classes = useStyles();
 
   /// calculate price after discount
-
-  let finalPrice = generateDiscountedPrice(item.price);
+  console.log("This is cart Item",item);
+  let finalPrice = generateDiscountedPrice(item.price, item.offer, item.offerPercentage, item.offerEndDate);
   let discountedPrice = item.price - finalPrice;
-  discountedPrice = dispalyMoney(discountedPrice);
+  discountedPrice = displayMoney(discountedPrice);
   let total = finalPrice * item.quantity;
-  total = dispalyMoney(total);
-  finalPrice = dispalyMoney(finalPrice);
+  total = displayMoney(total);
+  finalPrice = displayMoney(finalPrice);
 
   return (
     <Card className={length < 2 ? classes.root11 : classes.roots11}>
@@ -259,7 +317,7 @@ function CartItem({
               color="black"
               className={classes.itemOldPrice}
             >
-              <del>{discountedPrice}</del>
+              <del>({discountedPrice})</del>
             </Typography>
           </div>
         </div>

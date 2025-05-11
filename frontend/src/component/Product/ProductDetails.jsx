@@ -9,7 +9,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import {
   generateDiscountedPrice,
   calculateDiscount,
-  dispalyMoney,
+  displayMoney,
 } from "../DisplayMoney/DisplayMoney";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import Rating from "@material-ui/lab/Rating";
@@ -103,11 +103,11 @@ useEffect(() => {
   }
 
   // calculating Prices
-  const finalPrice = generateDiscountedPrice(product.price);
+  const finalPrice = generateDiscountedPrice(product.price ,product.offer, product.offerPercentage);
   const discountedPrice = product.price - finalPrice;
-  const newPrice = dispalyMoney(finalPrice);
-  const oldPrice = dispalyMoney(product.price);
-  const savedPrice = dispalyMoney(discountedPrice);
+  const newPrice = displayMoney(finalPrice);
+  const oldPrice = displayMoney(product.price);
+  const savedPrice = displayMoney(discountedPrice);
   const savedDiscount = calculateDiscount(discountedPrice, product.price);
 
   return (
@@ -116,7 +116,7 @@ useEffect(() => {
         <CricketBallLoader />
       ) : (
         <>
-          <div className="prodcutDetialsContainer">
+          <div className="productDetailsContainer">
             <MetaData title={product.name} />
             <section id="product_details" className="section">
               <div className="product_container">
@@ -171,6 +171,7 @@ useEffect(() => {
                             <del>{oldPrice}</del>
                           </small>
                         </h2>
+                        <h3> {product.offer ? <div>{product.offerName} Offers Applied</div> : "" } </h3>
                         <p className="saved_price">
                           You save: {savedPrice} ({savedDiscount}%)
                         </p>

@@ -1,5 +1,5 @@
 // dispaly Money In indian Formate
-export const dispalyMoney = function(num) {
+export const displayMoney = function(num) {
   const numFormate = new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
@@ -24,10 +24,30 @@ export const calculateTotal = (arr) => {
 };
 
 
-export function generateDiscountedPrice(price) {
-  var discountPercentage = 35;
-  var discountAmount = (discountPercentage / 100) * price;
-  var discountedPrice = price - discountAmount;
-  return discountedPrice.toFixed(2); 
+export function generateDiscountedPrice(price, offer, offerPercentage, offerEndDate) {
+  console.log(price, offer, offerPercentage, offerEndDate);
+
+  // const now = new Date();
+
+  // if (offer && offerEndDate && new Date(offerEndDate) > now) {
+  //   const discounted = price - (price * offerPercentage) / 100;
+  //   return discounted.toFixed(2);
+  // } else if(new Date(offerEndDate) < now){
+  //   offer = false;
+   
+  //   offerPercentage = 0;
+  // }
+  if (offer && offerPercentage && offerEndDate) {
+    const now = new Date();
+    const endDate = new Date(offerEndDate);
+
+    if (endDate > now) {
+      return price - (price * (offerPercentage / 100));
+    }
+  }
+
+  return price;
+ 
+  
 }
 

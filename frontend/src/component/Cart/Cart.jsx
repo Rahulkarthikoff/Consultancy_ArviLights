@@ -12,7 +12,7 @@ import MetaData from "../layouts/MataData/MataData";
 import { useHistory } from "react-router-dom";
 import CartItem from "./CartItem";
 import {
-  dispalyMoney,
+  displayMoney,
   generateDiscountedPrice,
 } from "../DisplayMoney/DisplayMoney";
 const Cart = () => {
@@ -67,16 +67,30 @@ const Cart = () => {
   };
 
   // claculte price after discount
-  let totalPrice = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
-  let discountedPrice = generateDiscountedPrice(totalPrice);
-  let totalDiscount = totalPrice - discountedPrice;
-  let final = totalPrice - totalDiscount;
-  final = dispalyMoney(final);
-  totalDiscount = dispalyMoney(totalDiscount);
-  totalPrice = dispalyMoney(totalPrice);
+    let totalOriginalPrice = 0;
+    let totalFinalPrice = 0;
+
+    cartItems.forEach((item) => {
+      const originalItemTotal = item.price * item.quantity;
+      totalOriginalPrice += originalItemTotal;
+
+      if (item.offer) {
+        const discountedPrice = generateDiscountedPrice(
+          item.price,
+          item.offer,
+          item.offerPercentage,
+          item.offerEndDate
+        );
+        totalFinalPrice += discountedPrice * item.quantity;
+      } else {
+        totalFinalPrice += originalItemTotal;
+      }
+    });
+
+    const totalDiscount = displayMoney(totalOriginalPrice - totalFinalPrice);
+    const totalPrice = displayMoney(totalOriginalPrice);
+    const final = displayMoney(totalFinalPrice);
+    const displayedDiscount = displayMoney(totalDiscount);
 
   return (
     <>
@@ -125,18 +139,25 @@ const Cart = () => {
               <div className="cart_left_container">
                 {cartItems &&
                   cartItems.map((item) => (
+                    // console.log("this is cart", item.productId), #tested OKay
+                    // console.log("Item:", item.name),
+                    // console.log("Price:", item.price),
+                    // console.log("Offer:", item.offer),
+                    // console.log("Offer %:", item.offerPercentage),
+                    // console.log("Offer End Date:", item.offerEndDate),
                     <Link
                       to="#"
                       style={{ textDecoration: "none", color: "none" }}
                     >
                       <CartItem
                         key={item.productId}
-                        item={item}
+                        productId={item.productId}
                         deleteCartItems={deleteCartItems}
+                        item={item}
                         decreaseQuantity={decreaseQuantity}
                         increaseQuantity={increaseQuantity}
                         length={cartItems.length}
-                        id = {item.productId}
+                        
                       />
                     </Link>
                   ))}
@@ -159,7 +180,7 @@ const Cart = () => {
                     <div className="discount order_Summary_Item">
                       <span>Discount</span>
                       <p>
-                        <del>{totalDiscount}</del>
+                        <del>{displayedDiscount}</del>
                       </p>
                     </div>
 

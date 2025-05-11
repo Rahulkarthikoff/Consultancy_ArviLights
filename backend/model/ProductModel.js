@@ -96,6 +96,20 @@ const productSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  offer: {
+    type: Boolean,
+    default: false,
+  },
+  offerPercentage: {
+    type: Number,
+    default: 0,
+  },
+  offerEndDate: {
+    type: Date,
+  },
+  offerName: {
+    type: String,
+  },
 });
 
 const ProductModel  = mongoose.model("ProductModel" , productSchema);

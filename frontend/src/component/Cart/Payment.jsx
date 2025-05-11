@@ -8,8 +8,8 @@ import OrderDetailsSection from "./OrderDetails";
 import DummyCard from "./DummyCard";
 import { clearErrors, createOrder } from "../../actions/orderAction";
 import CheckoutSteps from "./CheckoutSteps ";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
+// import { loadStripe } from "@stripe/stripe-js";
+// import { Elements } from "@stripe/react-stripe-js";
 
 // for cardDetails for card detials input section and hooks for accessing strip and element from App.js route
 import {
@@ -43,7 +43,7 @@ import { ReactComponent as MasterCard } from "../../Image/payment-svg/mastercard
 import { ReactComponent as Visa } from "../../Image/payment-svg/visa (1).svg";
 import { ReactComponent as Paytm } from "../../Image/payment-svg/paytm.svg";
 import {
-  dispalyMoney,
+  displayMoney,
   generateDiscountedPrice,
 } from "../DisplayMoney/DisplayMoney";
 
@@ -489,7 +489,7 @@ const PaymentComponent = () => {
 
 
 
-const stripePromise = loadStripe('pk_test_51RBrqa05TrkEbIZeaEXcDUyrP7w1uvXIM0TXy1LdJKwqp2lyV9x3Z5D7HPNHgHHNl9jY0GfICmi5xNBRFktZ5rdW00RWzhZiIY');
+// const stripePromise = loadStripe('pk_test_51RBrqa05TrkEbIZeaEXcDUyrP7w1uvXIM0TXy1LdJKwqp2lyV9x3Z5D7HPNHgHHNl9jY0GfICmi5xNBRFktZ5rdW00RWzhZiIY');
 
 
 
@@ -497,14 +497,14 @@ const stripePromise = loadStripe('pk_test_51RBrqa05TrkEbIZeaEXcDUyrP7w1uvXIM0TXy
   let discountedPrice = generateDiscountedPrice(totalPrice);
   let totalDiscount = totalPrice - discountedPrice;
   let final = totalPrice - totalDiscount;
-  final = dispalyMoney(final);
-  totalDiscount = dispalyMoney(totalDiscount); 
-  totalPrice = dispalyMoney(totalPrice);
+  final = displayMoney(final);
+  totalDiscount = displayMoney(totalDiscount); 
+  totalPrice = displayMoney(totalPrice);
 
   return (
     <>
- 
-        <div className={classes.payemntPage}>
+
+        <div className={classes.paymentPage}>
           <CheckoutSteps activeStep={2} />
           <MetaData title={"Payment"} />
           <div className={classes.paymentPage__container}>

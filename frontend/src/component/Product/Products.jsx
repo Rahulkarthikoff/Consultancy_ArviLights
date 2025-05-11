@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect , useRef} from "react";
 import "./Products.css";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../layouts/loader/Loader";
@@ -42,6 +42,7 @@ const categories = [
 
 
 function Products() {
+  const debounceTimer = React.useRef(null);
   const match = useRouteMatch();
   let keyword = match.params.keyword;
   const dispatch = useDispatch();
@@ -64,17 +65,43 @@ function Products() {
   const history = useHistory();
 
 
-  useEffect(() => {
-    if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
-    }
+ // 1. Debounced fetch
+useEffect(() => {
+  if (error) {
+    alert.error(error);
+    dispatch(clearErrors());
+  }
+
+  if (debounceTimer.current) {
+    clearTimeout(debounceTimer.current);
+  }
+
+  debounceTimer.current = setTimeout(() => {
     dispatch(getProduct(keyword, currentPage, price, category, ratings));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, keyword, currentPage, price, ratings, category]);
-  useEffect(() => {
-    setSearchTerm(keyword || "");
-  }, [keyword]);
+  }, 300);
+
+  return () => clearTimeout(debounceTimer.current);
+}, [dispatch, keyword, currentPage, price, ratings, category]);
+
+// 2. Reset page on filter change
+useEffect(() => {
+  setCurrentPage(1);
+}, [price, category, ratings]);
+
+// 3. Keep search bar in sync
+useEffect(() => {
+  setSearchTerm(keyword || "");
+}, [keyword]);
+
+  
+
+  const handleClearFilters = () => {
+    setPrice([0, 100000]);
+  setCategory("");  // <- should be an empty string, not array
+  setRatings(0);    // <- use 0 instead of null to reset rating
+  setSelectedCategory("");
+  setSelectedRating("all");
+  };
   
 
   const setCurrentPageNoHandler = (e) => {
@@ -95,7 +122,11 @@ function Products() {
 const [selectedRating, setSelectedRating] = React.useState("all");
 
 const handleRatingChange = (event) => {
-  setRatings(event.target.value);
+  // setRatings(event.target.value);
+  // setSelectedRating(event.target.value);
+
+  const selected = Number(event.target.value);
+  setRatings(selected);
   setSelectedRating(event.target.value);
   // Trigger filtering with the selected rating value or perform any other action
   
@@ -157,11 +188,13 @@ const handleRatingChange = (event) => {
                       <Slider
                         value={price}
                         onChange={priceHandler}
+                        onChangeCommitted={priceHandler}
                         min={0}
                         max={100000}
-                        step={100}
+                        step={500}                      // finer steps make it smoother
                         valueLabelDisplay="auto"
-                        aria-labelledby="range-slider"
+                        aria-labelledby="price-slider"
+                        
                       />
                     </div>
                     <div className="priceSelectors">
@@ -180,11 +213,17 @@ const handleRatingChange = (event) => {
                           <Typography variant="h6">
                             <AttachMoneyIcon style={{ marginRight: 8 }} /> Price
                           </Typography>
+                          <MenuItem value={0} className="menu_item">
+                            0
+                          </MenuItem>
+                          <MenuItem value={500} className="menu_item">
+                            500
+                          </MenuItem>
+                          <MenuItem value={1000} className="menu_item">
+                            1000
+                          </MenuItem>
                           <MenuItem value={5000} className="menu_item">
                             5000
-                          </MenuItem>
-                          <MenuItem value={10000} className="menu_item">
-                            10000
                           </MenuItem>
                           {/* Add more options as per your requirement */}
                         </Select>
@@ -200,11 +239,14 @@ const handleRatingChange = (event) => {
                             selected !== "" ? selected : "max"
                           }
                         >
-                          <MenuItem value={50000} className="menu_item">
-                            50000
+                          <MenuItem value={500} className="menu_item">
+                            500
                           </MenuItem>
-                          <MenuItem value={20000} className="menu_item">
-                            20000
+                          <MenuItem value={1000} className="menu_item">
+                            1000
+                          </MenuItem>
+                          <MenuItem value={5000} className="menu_item">
+                            5000
                           </MenuItem>
                           {/* Add more options as per your requirement */}
                           
@@ -288,7 +330,14 @@ const handleRatingChange = (event) => {
                       />
                     </RadioGroup>
                   </div>
-                  <div className="filter_divider"></div>
+                  <div className="filter_divider">
+                      <button
+                        onClick={handleClearFilters}
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded mt-2">
+                        Clear Filters
+                      </button>
+
+                  </div>
                   {/* Clear Filters */}
                 </div>
 

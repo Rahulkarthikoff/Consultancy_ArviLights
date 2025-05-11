@@ -12,14 +12,4 @@ const Loader = () => (
 export default Loader;
 
 
-// import React from "react";
-// import { ReactComponent as SpinnerIcon } from "../../../Image/Loader-svg/loaderSpinner.svg";
-// import "./Loader.css";
 
-// const Loader = () => (
-//   <div className="spinner-loader">
-//     <SpinnerIcon className="spinner" />
-//   </div>
-// );
-
-// export default Loader;

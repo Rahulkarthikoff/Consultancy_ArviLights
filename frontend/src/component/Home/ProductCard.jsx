@@ -12,7 +12,7 @@ import {
 import Rating from "@material-ui/lab/Rating";
 import { FitScreen } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import {dispalyMoney  ,generateDiscountedPrice} from "../DisplayMoney/DisplayMoney"
+import {displayMoney  ,generateDiscountedPrice} from "../DisplayMoney/DisplayMoney"
 import { addItemToCart } from "../../actions/cartAction";
 import { useDispatch } from "react-redux";
 const useStyles = makeStyles((theme) => ({
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     height: FitScreen,
     margin: theme.spacing(2),
     backgroundColor: "white",
-    currsor: "pointer",
+    cursor: "pointer",
     borderRadius: 18,
   },
   media: {
@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     fontSize: "1.2rem",
   },
+
   description: {
     fontSize: "0.8rem",
     fontWeight: 500, 
@@ -66,14 +67,38 @@ const useStyles = makeStyles((theme) => ({
     WebkitLineClamp: 3,
     WebkitBoxOrient: "vertical",
   },
+
+
+  offerPercentage: {
+    fontWeight: 500,
+    fontSize: "1.2rem",
+    fontStyle: "italic",
+    color: "red",
+    fontWeight: "bold",
+    padding: "10px",
+    fontSize: "0.8rem",
+    backgroundColor: "rgba(0, 0, 0, 0.83)",
+    borderRadius: "15px",
+    marginLeft: theme.spacing(1),
+    marginTop: theme.spacing(1),
+  }
 }));
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
-    let discountPrice = generateDiscountedPrice(product.price);
-    discountPrice = dispalyMoney(discountPrice);
-  const oldPrice = dispalyMoney(product.price);
+  let discountPrice;
+ 
+  if (product.offer) {
+    // console.log("The call is from ProductCard");
+    // console.log(product.offer);
+    const discounted = generateDiscountedPrice(product.price, product.offer, product.offerPercentage, product.offerEndDate);
+    discountPrice = displayMoney(discounted);
+  } else {
+    discountPrice = displayMoney(product.price);
+  }
+
+  const oldPrice = displayMoney(product.price);
   
   const truncated =
     product.description
@@ -84,6 +109,7 @@ const ProductCard = ({ product }) => {
 
 
       const addTocartHandler = (id , qty) => {
+        console.log("The call is from  add to cart ProductCard",id );
         dispatch(addItemToCart(id , qty))
       }
 
@@ -97,12 +123,7 @@ const ProductCard = ({ product }) => {
         <CardActionArea>
           <CardMedia className={classes.media} image={product.images[0].url} />
           <CardContent>
-            <Typography
-              gutterBottom
-              color="black"
-              fontWeight="bold"
-              style={{ fontWeight: "700" }}
-            >
+            <Typography gutterBottom color="black" fontWeight="bold">
               {nameTruncated}
             </Typography>
             <Box display="flex" alignItems="center">
@@ -112,7 +133,7 @@ const ProductCard = ({ product }) => {
                 precision={0.1}
                 readOnly
                 size="small"
-                style={{ color: "#ed1c24", marginRight: 8, fontWeight: "400" }}
+                style={{ color: "#ed1c24", marginRight: 8 }}
               />
               <Typography variant="body2" color="textSecondary">
                 ({product.numOfReviews})
@@ -127,13 +148,21 @@ const ProductCard = ({ product }) => {
               {truncated}
             </Typography>
             <Box display="flex" alignItems="center">
-              <Typography variant="body1" className={classes.oldPrice}>
-                {oldPrice}
-              </Typography>
+              {product.offer && (
+                <Typography variant="body1" className={classes.oldPrice}>
+                  {oldPrice}
+                </Typography>
+              )}
               <Typography variant="body1" className={classes.finalPrice}>
                 {discountPrice}
               </Typography>
+              {product.offer && (
+                <div className={classes.offerPercentage}>
+                  {product.offerPercentage} % Off
+                </div>
+              )}
             </Box>
+            {product.offer && <div>{product.offerName}</div>}
           </CardContent>
         </CardActionArea>
       </Link>

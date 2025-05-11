@@ -54,6 +54,10 @@ const LazyProductReviews = React.lazy(() =>
   import("./component/Admin/ProductReviews")
 );
 
+const LazyOffers = React.lazy(() =>
+  import("./component/Admin/SeasonalOffers")
+);
+
 function App() {
   const [stripeApiKey, setStripeApiKey] = useState("");
 
@@ -458,6 +462,12 @@ function App() {
               exact
               path="/admin/user/:id"
               component={LazyUpdateUser}
+            />
+            <PrivateRoute
+              isAdmin={true}
+              exact
+              path="/admin/offers"
+              component={LazyOffers}
             />
           </Switch>
         </Suspense>

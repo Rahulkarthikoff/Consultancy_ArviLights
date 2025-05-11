@@ -55,23 +55,46 @@ exports.createProduct = asyncWrapper(async (req, res) => {
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> get all product >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 exports.getAllProducts = asyncWrapper(async (req, res) => {
-  const resultPerPage = 6; // Number of products visible per page
-  const productsCount = await ProductModel.countDocuments(); // Get total number of products
+  const resultPerPage = 6; 
+
+  const now = new Date();
+  console.log(now);
+
+  const result = await ProductModel.updateMany(
+    {
+      offer: true,                    // Only update if offer is currently true
+      offerEndDate: { $lt: now },     // Offer has expired
+    },
+    {
+      $set: { offer: false, offerPercentage: 0 } // Reset offer-related fields
+    }
+  );
+
+
+
+
+
+  const productsCount = await ProductModel.countDocuments(); 
 
   // Create an instance of the ApiFeatures class, passing the ProductModel.find() query and req.query (queryString)
-  const apiFeature = new ApiFeatures(ProductModel.find(), req.query)
-    .search() // Apply search filter based on the query parameters
-    .filter(); // Apply additional filters based on the query parameters
+  const apiFeature = new ApiFeatures(ProductModel.find().populate("user"), req.query)
+    .search() 
+    .filter(); 
 
-  let products = await apiFeature.query; // Fetch the products based on the applied filters and search
+  let products = await apiFeature.query; 
 
-  let filteredProductCount = products.length; // Number of products after filtering (for pagination)
+  let filteredProductCount = products.length; 
 
-  apiFeature.Pagination(resultPerPage); // Apply pagination to the products
+  apiFeature.Pagination(resultPerPage); 
+
+  
+
 
   // Mongoose no longer allows executing the same query object twice, so use .clone() to retrieve the products again
   products = await apiFeature.query.clone(); // Retrieve the paginated products
 
+  
+  // console.log(products); // Log the products to the console
   res.status(201).json({
     success: true,
     products: products,
@@ -172,7 +195,9 @@ exports.deleteProduct = asyncWrapper(async (req, res, next) => {
 //>>>>>>>>>>>>>>>>>>>>>>> Detils of product >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 exports.getProductDetails = asyncWrapper(async (req, res, next) => {
   const id = req.params.id;
+  console.log("requested id from get details", id);
   const Product = await ProductModel.findById(id);
+  console.log("reached getProductDetails", Product);
   if (!Product) {
     return next(new ErrorHandler("Product not found", 404));
   }
@@ -302,5 +327,17 @@ exports.deleteReview = asyncWrapper(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
+  });
+});
+
+
+
+
+exports.getCategory = asyncWrapper(async (req, res, next) => {
+  const categories = await ProductModel.distinct("category");
+  console.log(categories);
+  res.status(200).json({
+    success: true,
+    categories,
   });
 });

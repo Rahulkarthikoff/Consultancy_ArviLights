@@ -23,5 +23,4 @@ exports.processPayment = asyncWrapper(async (req, res, next) => {
 
 exports.sendStripeApiKey = asyncWrapper(async (req, res, next) => {
   res.status(200).json({ stripeApiKey: process.env.STRIPE_API_KEY });
-  // res.status(200).json({ stripeApiKey: pk_test_51RBrqa05TrkEbIZeaEXcDUyrP7w1uvXIM0TXy1LdJKwqp2lyV9x3Z5D7HPNHgHHNl9jY0GfICmi5xNBRFktZ5rdW00RWzhZiIY });
 });
